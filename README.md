@@ -23,7 +23,7 @@ which may have some astonishing side effects:
 
 All these samples are clear counter examples of "Principle of Least Astonishment", see http://en.wikipedia.org/wiki/Principle_of_least_astonishment
 
-If You ever wrote "/*jshint bitwise:false*/" (allowing bitwise operations),
+If You ever wrote "/\*jshint bitwise:false\*/" (allowing bitwise operations),
 You should know, when the above pitfalls happen.
 
 Getting
@@ -35,12 +35,13 @@ or building for your own
     
     git clone https://github.com/fxa/uint32.js.git
     cd uint32.js
-    npm update
     npm install
     npm test
+    tests.html
 
 Feel free to include uint32.js within your other js sources and minify it together with your code.
 This library has only about 50 effective lines of code...
+Feel free to copy&paste the code.
     
 API
 --- 

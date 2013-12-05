@@ -10,7 +10,10 @@
     "keywords": [
         "uint32", "bitwise", "binary", "shift", "rotate"
     ],
-    "author": "Franz X Antesberger",
+    "author": {
+        "name": "Franz X Antesberger",
+        "email": "github@franz-antesberger.de"
+    },
     "license": "MIT",
     "dependencies": {},
     "devDependencies": {
