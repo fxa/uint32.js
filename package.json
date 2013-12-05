@@ -6,7 +6,7 @@
         "test": "jshint uint32.js test_uint32.js && mocha test_uint32",
         "hint": "jshint uint32.js test_uint32.js"
     },
-    "repository": "",
+    "repository": "https://github.com/fxa/uint32.js.git",
     "keywords": [
         "uint32", "bitwise", "binary", "shift", "rotate"
     ],
