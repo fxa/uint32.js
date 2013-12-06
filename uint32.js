@@ -168,5 +168,22 @@
         return ((x & (y | z)) | (y & z)) >>> 0;
     };
     
+    //
+    //  Arithmetic
+    //
+    
+    /**
+     *  Adds the given values modulus 2^32.
+     *  @returns the sum of the given values modulus 2^32
+     */
+    exporter.addMod32 = function (uint32val0/*, optionalValues*/) {
+        var result = uint32val0;
+        for (var index = 1; index < arguments.length; index += 1) {
+            result += arguments[index];
+        }
+        return result >>> 0;
+    };
+
+    
 }) ((typeof module !== 'undefined') ? module.exports = {} : window.uint32 = {});
     

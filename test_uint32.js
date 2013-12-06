@@ -183,5 +183,24 @@ if (typeof window === 'undefined') {
         });
         describe('majority()', function () {});
     });
-    
+
+    describe('Arithmetic', function () {
+        describe('addMod32', function () {
+            it('should add values below 2^32', function () {
+                expect(uint32.addMod32(0x40000000, 0x40000000)).to.be(0x80000000);
+            });
+            it('should add an arbitrary number of arguments', function () {
+                expect(uint32.addMod32(1, 2, 3)).to.be(6);
+                expect(uint32.addMod32(1, 2, 3, 4)).to.be(10);
+                expect(uint32.addMod32(1, 2, 3, 4, 5)).to.be(15);
+                expect(uint32.addMod32(1, 2, 3, 4, 5, 6)).to.be(21);
+            });
+            it('should add negative values', function () {
+                expect(uint32.addMod32(-1, -1)).to.be(0xfffffffe);
+            });
+            it('should calc mod32', function () {
+                expect(uint32.addMod32(0x80000001, 0x80000001)).to.be(2);
+            });
+        });
+    });
 })(); 
