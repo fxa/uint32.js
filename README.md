@@ -13,12 +13,12 @@ which may have some astonishing side effects:
 
 ```
     var x = 0xFFFFFFFF;
-    ~~x === x;      // false
-    (x | 0) === x;  // false 
-    (x & x) === x;  // false 
-    (x ^ 0) === x;  // false
-    (x >> 0) === x; // false 
-    (x << 0) === x; // false 
+    ~~x === x;      // false! ~~x -> -1
+    (x | 0) === x;  // false! x | 0 -> -1
+    (x & x) === x;  // false! x & x -> -1
+    (x ^ 0) === x;  // false! x ^ 0 -> -1
+    (x >> 0) === x; // false! x >> 0 -> -1
+    (x << 0) === x; // false! x << 0 -> -1
 ```
 
 All these samples are clear counter examples of "Principle of Least Astonishment", see http://en.wikipedia.org/wiki/Principle_of_least_astonishment
@@ -85,6 +85,9 @@ The API is very unspectacular. The main thing is, it works as you expect, and th
     
     uint32.choose(0x01010202, 0x00010001, 0x01000100); // 0x00010100 
     // function majority (x, y, z)
+
+    // Arithmetic
+    uint32.addMod32(0x80000001, 0x80000001); // 2
     
     // That's all! Detailed specifications are in the tests!
 ```

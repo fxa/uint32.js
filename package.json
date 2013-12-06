@@ -17,12 +17,9 @@
     ],
     "author": {
         "name": "Franz X Antesberger",
-        "email": "github@franz-antesberger.de"
+        "email": "info@franz-antesberger.de"
     },
-    "license":     {
-      "type": "MIT",
-      "url": "http://www.opensource.org/licenses/mit-license.php"
-    },
+    "license":  "Do, what You want",
     "dependencies": {},
     "devDependencies": {
         "expect.js": "latest",
