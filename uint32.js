@@ -6,6 +6,9 @@
 (function (exporter) {
     'use strict';
 
+    var POW_2_32 = 0x0100000000;
+    var POW_2_52 = 0x10000000000000;
+
     //
     //  Creating and Extracting
     //
@@ -64,7 +67,7 @@
      *  @returns the high part of the number
      */
     exporter.highPart = function (number) {
-        return exporter.toUint32(number / 0x0100000000);
+        return exporter.toUint32(number / POW_2_32);
     };
 
     //
@@ -184,6 +187,65 @@
         return result >>> 0;
     };
 
+    /**
+     *  Returns the log base 2 of the given value. That is the number of the highest set bit.
+     *  @param uint32val 
+     *  @returns {Number} the logarithm base 2, an integer between 0 and 31
+     */
+    exporter.log2 = function (uint32val) {
+        return Math.floor(Math.log(uint32val) / Math.LN2);
+    };
     
+/*     
+    // this implementation does the same, looks much funnier, but takes 2 times longer (according to jsperf) ...
+    var log2_u = new Uint32Array(2);
+    var log2_d = new Float64Array(log2_u.buffer);
+    
+    exporter.log2 = function (uint32val) {
+        // Ported from http://graphics.stanford.edu/~seander/bithacks.html#IntegerLogIEEE64Float to javascript
+        // (public domain)
+        if (uint32val === 0) {
+            return -Infinity;
+        }
+        // fill in the low part
+        log2_u[0] = uint32val;
+        // set the mantissa to 2^52
+        log2_u[1] = 0x43300000;
+        // subtract 2^52
+        log2_d[0] -= 0x10000000000000;
+        return (log2_u[1] >>> 20) - 0x3FF;
+    };
+*/
+
+    /**
+     *  Returns the "low" part of the multiplication.
+     *  @param {Number} factor1 an uint32
+     *  @param {Number} factor2 an uint32
+     *  @returns {Number} the low part of the product, that is factor1 * factor2 modulus 2^32
+     */
+    exporter.multLow = function (factor1, factor2) {
+        // We could test with log2(factor1) + log2(factor2) < 52,
+        // but it is easier to check the product than to check the number of bits of both
+        var prod = factor1 * factor2;
+        if (prod <= POW_2_52) {
+            return prod >>> 0;
+        }
+        // a*b mod x can be divided to (a1*b) mod x + (a2*b) mod x with a1+a2=a
+        // so lets make 2 multiplications with 16 and 32 bits
+        return ((((factor1 & 0xffff0000) * factor2) >>> 0) + (((factor1 & 0x0000ffff) * factor2) >>> 0)) >>> 0;
+    };
+    
+    /**
+     *  Returns the "high" part of the multiplication.
+     *  @param {Number} factor1 an uint32
+     *  @param {Number} factor2 an uint32
+     *  @returns {Number} the high part of the product, that is factor1 * factor2 divided 2^32 without fraction
+     */    
+    exporter.multHigh = function (factor1, factor2) {
+        var prod = factor1 * factor2;
+        // the top 52 are ok, so the top 32 bits, too
+        return exporter.highPart(prod);
+    };
+        
 }) ((typeof module !== 'undefined') ? module.exports = {} : window.uint32 = {});
     

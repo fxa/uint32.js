@@ -79,17 +79,20 @@ The API is very unspectacular. The main thing is, it works as you expect, and th
     uint32.shiftLeft(0x40000000, 1); // 0x80000000
     uint32.shiftRight(0x80000000, 1); // 0x40000000
     uint32.rotateLeft(0x80000000, 1); // 0x00000001
-    uint32.rotateLeft(0x00000001, 1); // 0x80000000
+    uint32.rotateRight(0x00000001, 1); // 0x80000000
 
-    // Logical Gates 
-    
+    // Logical Gates     
     uint32.choose(0x01010202, 0x00010001, 0x01000100); // 0x00010100 
-    // function majority (x, y, z)
+    uint32.majority (0x01, 0x00, 0x01); // 0x01
 
     // Arithmetic
     uint32.addMod32(0x80000001, 0x80000001); // 2
+    uint32.log2(0xffffffff); // 31
+    uint32.multLow(0xffffffff, 0xffffffff); // 1
+    uint32.multHigh(0xffffffff, 0xffffffff); // 0xfffffffe
     
-    // That's all! Detailed specifications are in the tests!
+    // That's all! 
+    // Detailed specifications are in the tests!
 ```
 
 License

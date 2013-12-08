@@ -1,11 +1,11 @@
 {
     "name": "uint32",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "a javascript library for dealing with (bitwise) uint32 operations",
     "homepage": "https://www.github.com/fxa/uint32.js",
     "main": "./uint32",
     "scripts": {
-        "test": "jshint uint32.js test_uint32.js && mocha test_uint32",
+        "test": "jshint uint32.js test_uint32.js && mocha --reporter spec test_uint32",
         "hint": "jshint uint32.js test_uint32.js"
     },
     "repository":  {

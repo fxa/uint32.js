@@ -181,7 +181,28 @@ if (typeof window === 'undefined') {
                 expect(uint32.choose(0x01010202, 0x00010001, 0x01000100)).to.be(0x00010100);
             });
         });
-        describe('majority()', function () {});
+        describe('majority()', function () {
+            it('should return 0, if all parameters are 0', function () {
+                expect(uint32.majority(0, 0, 0)).to.be(0);
+            });
+            it('should return 0, if all but one parameters are 0', function () {
+                expect(uint32.majority(0xffffffff, 0, 0)).to.be(0);
+                expect(uint32.majority(0, 0xffffffff, 0)).to.be(0);
+                expect(uint32.majority(0, 0, 0xffffffff)).to.be(0);
+            });
+            it('should return 0xffffffff, if two parameters are 0xffffffff', function () {
+                expect(uint32.majority(0xffffffff, 0xffffffff, 0)).to.be(0xffffffff);
+                expect(uint32.majority(0xffffffff, 0, 0xffffffff)).to.be(0xffffffff);
+                expect(uint32.majority(0, 0xffffffff, 0xffffffff)).to.be(0xffffffff);
+            });
+            it('should return 0xffffffff, if all parameters are 0xffffffff', function () {
+                expect(uint32.majority(0xffffffff, 0xffffffff, 0xffffffff)).to.be(0xffffffff);
+            });
+            it('should work bitwise', function () {
+                // all above tests bitwise
+                expect(uint32.majority(parseInt('01001101', 2), parseInt('00101011', 2), parseInt('00010111', 2))).to.be(parseInt('00001111', 2));
+            });
+        });
     });
 
     describe('Arithmetic', function () {
@@ -202,5 +223,55 @@ if (typeof window === 'undefined') {
                 expect(uint32.addMod32(0x80000001, 0x80000001)).to.be(2);
             });
         });
+        describe('log2', function () {
+            it('should work for 0', function () {
+                expect(uint32.log2(0)).to.be(-Infinity);
+            });
+            it('should work for 1', function () {
+                expect(uint32.log2(1)).to.be(0);
+            });
+            it('should work for 2', function () {
+                expect(uint32.log2(2)).to.be(1);
+            });
+            it('should work for values between 2 and 2^31', function () {
+                for (var exp = 2; exp < 32; exp += 1) {
+                    var pow = Math.pow(2, exp);
+                    expect(uint32.log2(pow - 1)).to.be(exp - 1);
+                    expect(uint32.log2(pow)).to.be(exp);
+                }
+            });
+            it('should work for 2^32-1', function () {
+                expect(uint32.log2(0xffffffff)).to.be(31);
+            });
+        });
+        describe('multLow', function () {
+            it('should work, if the product is smaller than 2^52', function () {
+                expect(uint32.multLow(0x04000000, 0x03ffffff)).to.be(0xfc000000);
+            });
+            it('should work, if the product is 2^52', function () {
+                expect(uint32.multLow(0x04000000, 0x04000000)).to.be(0);
+            });
+            it('should work, if the product is greater than 2^52', function () {
+                expect(uint32.multLow(0xff030201, 0xff030201)).to.be(0x0a0a0401);
+                expect(uint32.multLow(0xffffffff, 0xffffffff)).to.be(0x00000001);
+            });
+        });
+        describe('multHigh', function () {
+            it('should return 0, if the product is less than 2^32', function () {
+                expect(uint32.multHigh(0xffff, 0xffff)).to.be(0);
+            });
+            it('should work, if the product is smaller than 2^52', function () {
+                expect(uint32.multHigh(0x04000000, 0x03ffffff)).to.be(0xfffff);
+            });
+            it('should work, if the product is 2^52', function () {
+                expect(uint32.multHigh(0x04000000, 0x04000000)).to.be(0x00100000);
+            });
+            it('should work, if the product is greater than 2^52', function () {
+                expect(uint32.multHigh(0xffffffff, 0xffffffff)).to.be(0xfffffffe);
+                expect(uint32.multHigh(0xff030201, 0xff030201)).to.be(0xfe06fe07);
+            });
+        });
+        
     });
+    
 })(); 
