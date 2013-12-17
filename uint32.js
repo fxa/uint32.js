@@ -35,6 +35,17 @@
     exporter.getByteBigEndian = function (uint32value, byteNo) {
         return (uint32value >>> (8 * (3 - byteNo))) & 0xff;
     };
+    
+    /**
+     *  Returns the bytes as array.
+     *  e.g. when byteNo is 0, the high byte is returned, when byteNo = 3 the low byte is returned.     
+     *  @param {Number} uint32value the source to be extracted
+     *  @param {Number} byteNo 0-3 the byte number, 0 is the high byte, 3 the low byte
+     *  @returns {Array} the array [highByte, 2ndHighByte, 3rdHighByte, lowByte]
+     */
+    exporter.getByteBigsEndian = function (uint32value, byteNo) {
+        return [exporter.getByteBigEndian(0), exporter.getByteBigEndian(1), exporter.getByteBigEndian(2), exporter.getByteBigEndian(3)];
+    };
 
     /**
      *  Converts a given uin32 to a hex string including leading zeros.
@@ -243,8 +254,23 @@
      */    
     exporter.multHigh = function (factor1, factor2) {
         var prod = factor1 * factor2;
-        // the top 52 are ok, so the top 32 bits, too
+        // the top 52 bits are ok, so the top 32 bits, too
         return exporter.highPart(prod);
+    };
+    
+    /**
+     *  Returns the the low and the high uint32 of the multiplication.
+     *  @param {Number} factor1 an uint32
+     *  @param {Number} factor2 an uint32
+     *  @param {Uint32Array[2]} resultUint32Array2 the Array, where the result will be written to
+     *  @returns undefined
+     */    
+    exporter.mult = function (factor1, factor2, resultUint32Array2) {
+        var high16 =  ((factor1 & 0xffff0000) >>> 0) * factor2;
+        var low16 = (factor1 & 0x0000ffff) * factor2;
+        resultUint32Array2[0] = ((high16 + low16) / POW_2_32) >>> 0;
+        // the last >>> 0 is not needed, it is done implicitly by the uin32array
+        resultUint32Array2[1] = ((high16 >>> 0) + (low16 >>> 0));// >>> 0;
     };
         
 }) ((typeof module !== 'undefined') ? module.exports = {} : window.uint32 = {});

@@ -8,6 +8,21 @@ if (typeof window === 'undefined') {
 (function () {
     "use strict";
 
+    function toHex (ui32) {
+        var tmp = ui32.toString(16);
+        var neededZeros = 8 - tmp.length;
+        return new Array(neededZeros + 1).join('0') + tmp;
+    }
+    function expectHex(ui32) {
+        return {
+            to: {
+                be: function (expected) {
+                    expect(toHex(ui32)).to.be(toHex(expected));
+                }
+            }
+        };
+    }
+    
     describe('Creating and Extracting', function () {
         describe('fromBytesBigEndian()', function () {
             it('should create an uint32 of given bytes', function () {
@@ -267,8 +282,38 @@ if (typeof window === 'undefined') {
                 expect(uint32.multHigh(0x04000000, 0x04000000)).to.be(0x00100000);
             });
             it('should work, if the product is greater than 2^52', function () {
-                expect(uint32.multHigh(0xffffffff, 0xffffffff)).to.be(0xfffffffe);
                 expect(uint32.multHigh(0xff030201, 0xff030201)).to.be(0xfe06fe07);
+                expect(uint32.multHigh(0xffffffff, 0xffffffff)).to.be(0xfffffffe);
+            });
+        });
+        describe('mult', function () {
+            it('should work, if the product is less than 2^32', function () {
+                var result = new Uint32Array(2);
+                uint32.mult(0xffff, 0xffff, result);
+                expect(result[0]).to.be(0);
+                expect(result[1]).to.be(0xfffe0001);
+            });
+            it('should work, if the product is smaller than 2^52', function () {
+                var result = new Uint32Array(2);
+                uint32.mult(0x04000000, 0x03ffffff, result);
+                expect(result[0]).to.be(0xfffff);
+                expect(result[1]).to.be(0xfc000000);
+            });
+            it('should work, if the product is 2^52', function () {
+                var result = new Uint32Array(2);
+                uint32.mult(0x04000000, 0x04000000, result);
+                expect(result[0]).to.be(0x00100000);
+                expect(result[1]).to.be(0);
+            });
+            it('should work, if the product is greater than 2^52', function () {
+                var result = new Uint32Array(2);
+                uint32.mult(0xff030201, 0xff030201, result);
+                expectHex(result[0]).to.be(0xfe06fe07);
+                expectHex(result[1]).to.be(0x0a0a0401);
+                
+                uint32.mult(0xffffffff, 0xffffffff, result);
+                expect(result[0]).to.be(0xfffffffe);
+                expect(result[1]).to.be(1);
             });
         });
         

@@ -90,6 +90,9 @@ The API is very unspectacular. The main thing is, it works as you expect, and th
     uint32.log2(0xffffffff); // 31
     uint32.multLow(0xffffffff, 0xffffffff); // 1
     uint32.multHigh(0xffffffff, 0xffffffff); // 0xfffffffe
+
+    var result = new Uint32Array(2);
+    uint32.mult(0xffffffff, 0xffffffff, result); // result -> [0xfffffffe, 0x00000001]
     
     // That's all! 
     // Detailed specifications are in the tests!
