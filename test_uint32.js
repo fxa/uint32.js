@@ -13,7 +13,8 @@ if (typeof window === 'undefined') {
         var neededZeros = 8 - tmp.length;
         return new Array(neededZeros + 1).join('0') + tmp;
     }
-    function expectHex(ui32) {
+
+    function expectHex (ui32) {
         return {
             to: {
                 be: function (expected) {
@@ -22,14 +23,14 @@ if (typeof window === 'undefined') {
             }
         };
     }
-    
+
     describe('Creating and Extracting', function () {
         describe('fromBytesBigEndian()', function () {
             it('should create an uint32 of given bytes', function () {
                 expect(uint32.fromBytesBigEndian(1,2,3,4)).to.be(0x01020304);
             });
         });
-        
+
         describe('getByteBigEndian()', function () {
             it('should extract the high byte', function () {
                 expect(uint32.getByteBigEndian(0xf1f2f3f4, 0)).to.be(0xf1);
@@ -44,7 +45,7 @@ if (typeof window === 'undefined') {
                 expect(uint32.getByteBigEndian(0xf1f2f3f4, 3)).to.be(0xf4);
             });
         });
-        
+
         describe('toHex()', function () {
             it('should fill with leading zeros', function () {
                 expect(uint32.toHex(0x01)).to.be('00000001');
@@ -53,13 +54,13 @@ if (typeof window === 'undefined') {
                 expect(uint32.toHex(0x01, 2)).to.be('01');
             });
         });
-        
+
         describe('toUint32()', function () {
             it('should convert an uint32 value', function () {
                 expect(uint32.toUint32(0xf1f2f3f4)).to.be(0xf1f2f3f4);
             });
             it('should convert a negative value', function () {
-                expect(uint32.toUint32(-1)).to.be(0xffffffff);
+                expect(uint32.toUint32( -1)).to.be(0xffffffff);
             });
             it('should convert a high value', function () {
                 expect(uint32.toUint32(0x010000000004)).to.be(4);
@@ -69,9 +70,9 @@ if (typeof window === 'undefined') {
             });
         });
     });
-    
+
     describe('Bitwise Logical Operations', function () {
-        describe('or', function () {
+        describe('or()', function () {
             it('should handle low bits', function () {
                 expect(uint32.or(1, 1)).to.be(1);
                 expect(uint32.or(1, 0)).to.be(1);
@@ -85,8 +86,8 @@ if (typeof window === 'undefined') {
                 expect(uint32.or(1, 2, 4, 8)).to.be(15);
             });
         });
-        
-        describe('and', function () {
+
+        describe('and()', function () {
             it('should handle low bits', function () {
                 expect(uint32.and(1, 1)).to.be(1);
                 expect(uint32.and(1, 0)).to.be(0);
@@ -101,7 +102,7 @@ if (typeof window === 'undefined') {
             });
         });
 
-        describe('xor', function () {
+        describe('xor()', function () {
             it('should xor high bit to off', function () {
                 expect(uint32.xor(0x80000000, 0xffffffff)).to.be(0x7fffffff);
             });
@@ -114,20 +115,20 @@ if (typeof window === 'undefined') {
                 expect(uint32.xor(1, 2, 4, 8)).to.be(15);
             });
         });
-        
-        describe('not', function () {
+
+        describe('not()', function () {
             it('should negate 0', function () {
                 expect(uint32.not(0)).to.be(0xffffffff);
             });
             it('should negate negative values', function () {
-                expect(uint32.not(-1)).to.be(0);
+                expect(uint32.not( -1)).to.be(0);
             });
             it('should negate values with high bit set', function () {
                 expect(uint32.not(0xc0000000)).to.be(0x3fffffff);
             });
         });
     });
-    
+
     describe('Shifting and Rotating', function () {
         describe('shiftLeft()', function () {
             it('should handle the high bit', function () {
@@ -143,7 +144,7 @@ if (typeof window === 'undefined') {
                 expect(uint32.shiftLeft(0x80000000, 1)).to.be(0);
             });
         });
-        
+
         describe('rotateLeft()', function () {
             it('should rotate little values', function () {
                 expect(uint32.rotateLeft(0x01, 1)).to.be(0x02);
@@ -154,7 +155,7 @@ if (typeof window === 'undefined') {
                 expect(uint32.rotateLeft(0x80000000, 1)).to.be(0x00000001);
             });
         });
-        
+
         describe('rotateRight()', function () {
             it('should rotate little values', function () {
                 expect(uint32.rotateRight(0x01, 1)).to.be(0x80000000);
@@ -164,18 +165,18 @@ if (typeof window === 'undefined') {
                 expect(uint32.rotateRight(0x40000000, 1)).to.be(0x20000000);
                 expect(uint32.rotateRight(0x80000000, 1)).to.be(0x40000000);
             });
-        });        
+        });
     });
-    
+
     describe('Logical Gates', function () {
         describe('choose()', function () {
-            
+
             it('should use y, if x flag is set', function () {
                 expect(uint32.choose(1, 0, 0)).to.be(0);
                 expect(uint32.choose(1, 0, 1)).to.be(0);
                 expect(uint32.choose(1, 1, 0)).to.be(1);
                 expect(uint32.choose(1, 1, 1)).to.be(1);
-                
+
                 expect(uint32.choose(0xffffffff,  0,  0)).to.be(0);
                 expect(uint32.choose(0xffffffff,  0, 0xffffffff)).to.be(0);
                 expect(uint32.choose(0xffffffff, 0xffffffff,  0)).to.be(0xffffffff);
@@ -186,7 +187,7 @@ if (typeof window === 'undefined') {
                 expect(uint32.choose(0, 0, 1)).to.be(1);
                 expect(uint32.choose(0, 1, 0)).to.be(0);
                 expect(uint32.choose(0, 1, 1)).to.be(1);
-                
+
                 expect(uint32.choose(0,  0,  0)).to.be(0);
                 expect(uint32.choose(0,  0, 0xffffffff)).to.be(0xffffffff);
                 expect(uint32.choose(0, 0xffffffff,  0)).to.be(0);
@@ -221,7 +222,7 @@ if (typeof window === 'undefined') {
     });
 
     describe('Arithmetic', function () {
-        describe('addMod32', function () {
+        describe('addMod32()', function () {
             it('should add values below 2^32', function () {
                 expect(uint32.addMod32(0x40000000, 0x40000000)).to.be(0x80000000);
             });
@@ -232,15 +233,15 @@ if (typeof window === 'undefined') {
                 expect(uint32.addMod32(1, 2, 3, 4, 5, 6)).to.be(21);
             });
             it('should add negative values', function () {
-                expect(uint32.addMod32(-1, -1)).to.be(0xfffffffe);
+                expect(uint32.addMod32( -1, -1)).to.be(0xfffffffe);
             });
             it('should calc mod32', function () {
                 expect(uint32.addMod32(0x80000001, 0x80000001)).to.be(2);
             });
         });
-        describe('log2', function () {
+        describe('log2()', function () {
             it('should work for 0', function () {
-                expect(uint32.log2(0)).to.be(-Infinity);
+                expect(uint32.log2(0)).to.be( -Infinity);
             });
             it('should work for 1', function () {
                 expect(uint32.log2(1)).to.be(0);
@@ -259,34 +260,7 @@ if (typeof window === 'undefined') {
                 expect(uint32.log2(0xffffffff)).to.be(31);
             });
         });
-        describe('multLow', function () {
-            it('should work, if the product is smaller than 2^52', function () {
-                expect(uint32.multLow(0x04000000, 0x03ffffff)).to.be(0xfc000000);
-            });
-            it('should work, if the product is 2^52', function () {
-                expect(uint32.multLow(0x04000000, 0x04000000)).to.be(0);
-            });
-            it('should work, if the product is greater than 2^52', function () {
-                expect(uint32.multLow(0xff030201, 0xff030201)).to.be(0x0a0a0401);
-                expect(uint32.multLow(0xffffffff, 0xffffffff)).to.be(0x00000001);
-            });
-        });
-        describe('multHigh', function () {
-            it('should return 0, if the product is less than 2^32', function () {
-                expect(uint32.multHigh(0xffff, 0xffff)).to.be(0);
-            });
-            it('should work, if the product is smaller than 2^52', function () {
-                expect(uint32.multHigh(0x04000000, 0x03ffffff)).to.be(0xfffff);
-            });
-            it('should work, if the product is 2^52', function () {
-                expect(uint32.multHigh(0x04000000, 0x04000000)).to.be(0x00100000);
-            });
-            it('should work, if the product is greater than 2^52', function () {
-                expect(uint32.multHigh(0xff030201, 0xff030201)).to.be(0xfe06fe07);
-                expect(uint32.multHigh(0xffffffff, 0xffffffff)).to.be(0xfffffffe);
-            });
-        });
-        describe('mult', function () {
+        describe('mult()', function () {
             it('should work, if the product is less than 2^32', function () {
                 var result = new Uint32Array(2);
                 uint32.mult(0xffff, 0xffff, result);
@@ -310,13 +284,24 @@ if (typeof window === 'undefined') {
                 uint32.mult(0xff030201, 0xff030201, result);
                 expectHex(result[0]).to.be(0xfe06fe07);
                 expectHex(result[1]).to.be(0x0a0a0401);
-                
+
                 uint32.mult(0xffffffff, 0xffffffff, result);
                 expect(result[0]).to.be(0xfffffffe);
                 expect(result[1]).to.be(1);
+
+                // (2**15 + 1) ** 2 = 2**30 + 2 * 2**15 + 1 = 0x40 00 00 01 00 00 00 01
+                uint32.mult(0x80000001, 0x80000001, result);
+                expectHex(result[0]).to.be(0x40000001);
+                expectHex(result[1]).to.be(0x00000001);
+            });
+            it('should not make the rounding error the 0.1.3 version did', function () {
+                var result = new Uint32Array(2);
+                uint32.mult(0xfa93896b, 0xa1a9f539, result);
+                expectHex(result[1]).to.be(0xffffffd3);
+                expectHex(result[0]).to.be(0x9e3d24d8);
             });
         });
-        
+
     });
-    
-})(); 
+
+})();
