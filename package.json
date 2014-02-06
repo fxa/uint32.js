@@ -28,6 +28,7 @@
         "jscs": "latest"    
     },
     "files": [
+        ".jscs.json",
         "README.md",
         "CHANGELOG.md",
         "tests.html",
