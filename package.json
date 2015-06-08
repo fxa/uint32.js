@@ -10,7 +10,7 @@
     },
     "repository":  {
         "type": "git",
-        "url": "https://github.com/fxa/uin32.js.git"
+        "url": "https://github.com/fxa/uint32.js.git"
     },
     "keywords": [
         "uint32", "bitwise", "binary", "shift", "rotate"
